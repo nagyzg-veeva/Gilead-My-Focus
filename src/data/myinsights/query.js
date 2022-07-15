@@ -38,17 +38,60 @@ export const getCurrent = (objectName, fieldName)=> {
     return deferred.promise;
 };
 
+export const getTerritories = () => {
+
+  const deferred = $q.defer();
+
+  const queryConfig = {
+    params: {
+        object: 'Territory2',
+        fields: ['Id', 'Name']   
+    }
+  };
+
+  ds.runQuery(queryConfig.params).then(result => {
+    deferred.resolve(result.data)
+  }, err => {
+      console.log(err, err.message);
+      deferred.resolve(null);
+  });
+
+  return deferred.promise;
+}
+
+export const getuserTerritory2Association = (currentUserId) => {
+
+  const deferred = $q.defer();
+
+  const queryConfig = {
+    params: {
+        object: 'UserTerritory2Association',
+        fields: ['Id', 'Territory2Id', 'UserId'],
+        where: 'UserId = \''  + currentUserId + '\''   
+    }
+  };
+
+  ds.runQuery(queryConfig.params).then(result => {
+    deferred.resolve(result.data)
+  }, err => {
+      console.log(err, err.message);
+      deferred.resolve(null);
+  });
+
+  return deferred.promise;
+}
  
 
-export const getFocusAccounts = ()=>{
+export const getFocusAccounts = (territories)=>{
   const queryConfig = {
     params: {
         object: 'TSF_vod__c',
-        fields: ['Account_vod__c','My_Focus_gild__c', 'Id'],
-        where: 'My_Focus_gild__c = true'    
+        fields: ['Account_vod__c','My_Focus_gild__c', 'Id', 'Territory_vod__c'],
+        where: 'My_Focus_gild__c = true AND Territory_vod__c IN ' + ds.getInStatement(territories) 
     }
 };
 const deferred = $q.defer();
+
 ds.runQuery(queryConfig.params).then(result => {
     console.log('getFocusAccounts', result)
     deferred.resolve(result)

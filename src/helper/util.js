@@ -122,7 +122,7 @@ export const addNumberOfCalls = (accounts, callsgrouped) => {
     console.log('addNumberOfCalls',accounts,callsgrouped)
     // for (let accountId in callsgrouped ){
         accounts.data.forEach(account => {
-            console.log('watda',callsgrouped[account.Id.value])
+            //console.log('watda',callsgrouped[account.Id.value])
             account['calls'] = {
                'display': callsgrouped[account.Id.value]
             }
@@ -142,7 +142,7 @@ export const createDataForVTable = (data, notNeededFields, additionals, notAvail
      data.data.forEach(item => {
          let tempObj = {}
         for(let key in item) {
-            console.log('key',key)
+            //console.log('key',key)
             // if(!notNeededFields.includes(key)){
                 if(key == 'Call_Date_vod__c'){ //key == 'date' ||
                     let date = new Date(item[key].value)

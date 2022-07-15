@@ -18,9 +18,25 @@ try {
        
         console.log('getTSFavailableFields',TSFavailableFields, isMyFocusAvailable)
         let myCalls = await ds.getCalls(currentUserId.User.Id)
+
+        let territories = await ds.getTerritories();
+        let territoryMap = territories.map(territory =>{
+            return {
+                id: territory.Id.value,
+                name: territory.Name.value
+            }
+        });
+        let territoryAssociations = await ds.getuserTerritory2Association(currentUserId.User.Id);
+        console.log('territoryAssociations', territoryAssociations)
+        let userTerritories = territoryAssociations.map(terr =>{
+            return territoryMap.filter(territory => territory.id === terr.Territory2Id.value).map(obj => obj.name).toString();
+        });
+        console.log('userTerritories', userTerritories)
+
        if(isMyFocusAvailable){
-        let focusAccounts = await  ds.getFocusAccounts()
-          myFocusAccounts = await ds.getAccounts(util.getIds(focusAccounts,'Account_vod__c'))
+        let focusAccounts = await  ds.getFocusAccounts(userTerritories)
+
+        myFocusAccounts = await ds.getAccounts(util.getIds(focusAccounts,'Account_vod__c'))
          
           if(myFocusAccounts.data.length > 0){
             let myFocusAccountCalls = await ds.getCalls(currentUserId.User.Id,util.getIds(focusAccounts,'Account_vod__c'))
